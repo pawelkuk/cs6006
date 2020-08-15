@@ -14,14 +14,16 @@ class Node:
     def insert(self, val):
         if self.val < val:
             if self.right:
-                self.right.insert(val)
+                return self.right.insert(val)
             else:
                 self.right = Node(val, self)
+                return self.right
         if self.val >= val:
             if self.left:
-                self.left.insert(val)
+                return self.left.insert(val)
             else:
                 self.left = Node(val, self)
+                return self.left
 
     def max(self):
         if self.right:
@@ -81,21 +83,48 @@ class AVL:
         y.right = x
         x.parent = y
 
+    def rebalance(self, node):
+        while node is not None:
+            lh = node.left.height() if node.left else 0
+            rh = node.right.height() if node.right else 0
+            if lh >= 2 + rh:
+                llh = node.left.left.height() if node.left.left else 0
+                lrh = node.left.right.height() if node.left.right else 0
+                if llh >= lrh:
+                    self.right_rotate(node)
+                else:
+                    self.left_rotate(node.left)
+                    self.right_rotate(node)
+            elif rh >= 2 + lh:
+                rrh = node.right.right.height() if node.right.right else 0
+                rlh = node.right.left.height() if node.right.left else 0
+                if rrh >= rlh:
+                    self.left_rotate(node)
+                else:
+                    self.right_rotate(node.right)
+                    self.left_rotate(node)
+            node = node.parent
+
+    def insert(self, val):
+        node = self.root.insert(val)
+        self.rebalance(node)
+
 
 avl = AVL(10)
-avl.root.insert(5)
-avl.root.insert(20)
-avl.root.insert(30)
-avl.root.insert(15)
+avl.insert(5)
+avl.insert(6)
+avl.insert(3)
+avl.insert(8)
+avl.insert(9)
+avl.insert(4)
+avl.insert(2)
+avl.insert(1)
+avl.insert(20)
+avl.insert(30)
+avl.insert(15)
 
 print(avl.root)
 print(avl.root.max())
 print(avl.root.min())
 print(avl.root.height())
-
-avl.left_rotate(avl.root)
-print(avl.root)
-
-avl.right_rotate(avl.root)
-
 print(avl.root)
