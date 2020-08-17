@@ -1,5 +1,4 @@
 from typing import List
-import heapq
 from collections import defaultdict
 import random
 import math
@@ -29,9 +28,9 @@ adjmatrix = [
 adjlist = from_adjmatrix(adjmatrix)
 
 s = random.randint(0, v - 1)
-print(s)
+print("start:", s)
 end = random.randint(0, v - 1)
-print(end)
+print("end:", end)
 assert s != end
 d = [float("inf") for i in range(v)]
 visited = [False for i in range(v)]
@@ -41,18 +40,20 @@ d[s] = 0
 
 def dijkstra():
     while True:
+        # inefficient way of implementing a priority queque,
+        # room for improvement
         tmp_list = [
             (vertex, dist)
             for vertex, (visit, dist) in enumerate(zip(visited, d))
             if not visit
         ]
         if visited[end]:
-            return 1  # found end vertex
+            return 0  # found end vertex
         if not tmp_list:
-            return 2  # traversed all
+            return 1  # traversed all
         curr_node, dist = min(tmp_list, key=lambda x: x[1],)
         if dist == float("inf"):
-            return 3  # no path
+            return 2  # no path
         neighbors = adjlist[curr_node]
         for vertex, dist in neighbors:
             if d[vertex] > d[curr_node] + dist:
@@ -64,4 +65,3 @@ return_code = dijkstra()
 print("return code", return_code)
 pprint(adjlist)
 pprint(["Dists"] + d)
-
